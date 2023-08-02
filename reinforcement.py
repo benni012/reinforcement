@@ -62,6 +62,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         for e in self.entities:
+            if e is None: continue
             arcade.draw_circle_filled(e.position.x, e.position.y, e.radius, colors[e.color])
     
 
@@ -81,6 +82,7 @@ class MyGame(arcade.Window):
         self.player.velocity = vel * speed
 
         for e in self.entities:
+            if e is None: continue
             e.position += e.velocity * delta_time
 
             if e.position.x < 0 or e.position.x >= SCREEN_WIDTH:
@@ -89,6 +91,19 @@ class MyGame(arcade.Window):
             if e.position.y < 0 or e.position.y >= SCREEN_HEIGHT:
                 e.velocity.y = -e.velocity.y
                 e.position.y = clamp(e.position.y, 0, SCREEN_HEIGHT-1)
+        
+        for i in range(len(self.entities)):
+            for j in range(i+1, len(self.entities)):
+                a, b = self.entities[i], self.entities[j]
+                if a is None or b is None: continue
+                if a.position.dist(b.position) < a.radius+b.radius:
+                    if a.radius < b.radius:
+                        b.radius = math.sqrt(b.radius*b.radius + a.radius*a.radius)
+                        self.entities[i] = None
+                    else:
+                        a.radius = math.sqrt(b.radius*b.radius + a.radius*a.radius)
+                        self.entities[j] = None
+        
         
         
 
@@ -102,15 +117,6 @@ class MyGame(arcade.Window):
         elif key == arcade.key.DOWN:
             self.down = True
 
-        # Keep the circle within the screen boundaries
-        # if self.circle_x < CIRCLE_RADIUS:
-        #     self.circle_x = CIRCLE_RADIUS
-        # elif self.circle_x > SCREEN_WIDTH - CIRCLE_RADIUS:
-        #     self.circle_x = SCREEN_WIDTH - CIRCLE_RADIUS
-        # if self.circle_y < CIRCLE_RADIUS:
-        #     self.circle_y = CIRCLE_RADIUS
-        # elif self.circle_y > SCREEN_HEIGHT - CIRCLE_RADIUS:
-        #     self.circle_y = SCREEN_HEIGHT - CIRCLE_RADIUS
     def on_key_release(self, key: int, modifiers: int):
         if key == arcade.key.LEFT:
             self.left = False
