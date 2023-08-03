@@ -85,12 +85,12 @@ class MyGame(arcade.Window):
             if e is None: continue
             e.position += e.velocity * delta_time
 
-            if e.position.x < 0 or e.position.x >= SCREEN_WIDTH:
+            if e.position.x < e.radius or e.position.x >= SCREEN_WIDTH-e.radius:
                 e.velocity.x = -e.velocity.x
-                e.position.x = clamp(e.position.x, 0, SCREEN_WIDTH-1)
-            if e.position.y < 0 or e.position.y >= SCREEN_HEIGHT:
+                e.position.x = clamp(e.position.x, e.radius, SCREEN_WIDTH-e.radius-1)
+            if e.position.y < e.radius or e.position.y >= SCREEN_HEIGHT-e.radius:
                 e.velocity.y = -e.velocity.y
-                e.position.y = clamp(e.position.y, 0, SCREEN_HEIGHT-1)
+                e.position.y = clamp(e.position.y, e.radius, SCREEN_HEIGHT-e.radius-1)
         
         for i in range(len(self.entities)):
             for j in range(i+1, len(self.entities)):
