@@ -96,16 +96,19 @@ class MyGame(arcade.Window):
             for j in range(i+1, len(self.entities)):
                 a, b = self.entities[i], self.entities[j]
                 if a is None or b is None: continue
-                if a.position.dist(b.position) < a.radius+b.radius:
-                    if a.radius < b.radius:
-                        b.radius = math.sqrt(b.radius*b.radius + a.radius*a.radius)
-                        self.entities[i] = None
+                d = a.position.dist(b.position)
+                if d < a.radius+b.radius:
+                    if a.radius > b.radius:
+                        a.radius = (d + math.sqrt(2*(a.radius*a.radius+b.radius*b.radius)-d*d))/2
+                        b.radius = d - a.radius
                     else:
-                        a.radius = math.sqrt(b.radius*b.radius + a.radius*a.radius)
+                        b.radius = (d + math.sqrt(2*(a.radius*a.radius+b.radius*b.radius)-d*d))/2
+                        a.radius = d - b.radius
+
+                    if a.radius < 1:
+                        self.entities[i] = None
+                    if b.radius < 1:
                         self.entities[j] = None
-        
-        
-        
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT:
