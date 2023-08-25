@@ -4,9 +4,9 @@ import math
 import random
 
 
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 480
-CIRCLE_RADIUS = 30
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 800
+CIRCLE_RADIUS = 40
 
 def clamp(a, min, max):
     if a < min: return min
